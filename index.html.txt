@@ -169,6 +169,7 @@ margin-top:16px;
 font-size:18px;
 font-weight:700;
 text-align:center;
+min-height:28px;
 }
 
 .score{
@@ -194,13 +195,19 @@ color:#f87171;
 <div class="container">
 
 <div class="header">
-<div class="title">⚡ 포켓몬 도감 퀴즈</div>
+
+<div class="title">
+⚡ 포켓몬 도감 퀴즈
+</div>
 
 <a class="mail-btn"
 href="mailto:24kwai0310@sonline20.sen.go.kr">
+
 <i class="ti ti-mail"></i>
 문의하기
+
 </a>
+
 </div>
 
 <div id="modeSelect" class="mode-select">
@@ -224,7 +231,9 @@ href="mailto:24kwai0310@sonline20.sen.go.kr">
 </div>
 
 <div class="image-box">
+
 <img id="pokemonImg" src="">
+
 </div>
 
 <div class="hints">
@@ -353,14 +362,19 @@ let timer = 20;
 let interval;
 
 function randomPokemon(){
+
 return pokemons[Math.floor(Math.random()*pokemons.length)];
+
 }
 
 function startSolo(){
 
 multiMode = false;
 
+score1 = 0;
+
 document.getElementById("modeSelect").style.display="none";
+
 document.getElementById("quiz").style.display="block";
 
 loadPokemon();
@@ -371,7 +385,13 @@ function startMulti(){
 
 multiMode = true;
 
+score1 = 0;
+score2 = 0;
+
+currentPlayer = 1;
+
 document.getElementById("modeSelect").style.display="none";
+
 document.getElementById("quiz").style.display="block";
 
 loadPokemon();
@@ -385,7 +405,8 @@ currentPokemon = randomPokemon();
 document.getElementById("pokemonImg").src =
 currentPokemon.img;
 
-document.getElementById("pokemonImg").classList.remove("show");
+document.getElementById("pokemonImg")
+.classList.remove("show");
 
 document.getElementById("gen").textContent =
 currentPokemon.gen;
@@ -417,7 +438,7 @@ document.getElementById("playerTurn").textContent =
 `플레이어 ${currentPlayer} 차례`;
 
 document.getElementById("score").textContent =
-`플레이어1 : ${score1}점   |   플레이어2 : ${score2}점`;
+`플레이어1 : ${score1}점 | 플레이어2 : ${score2}점`;
 
 }else{
 
@@ -450,9 +471,15 @@ if(timer <= 0){
 clearInterval(interval);
 
 document.getElementById("result").textContent =
-"⏰ 시간 초과!";
+`⏰ 시간 초과! 정답 : ${currentPokemon.name}`;
 
 showPokemon();
+
+setTimeout(()=>{
+
+nextQuestion();
+
+},1500);
 
 }
 
@@ -465,14 +492,16 @@ function checkAnswer(){
 const input =
 document.getElementById("answer").value.trim();
 
+if(input === "") return;
+
+clearInterval(interval);
+
 if(input === currentPokemon.name){
 
 document.getElementById("result").textContent =
 "🎉 정답입니다!";
 
 showPokemon();
-
-clearInterval(interval);
 
 if(multiMode){
 
@@ -494,10 +523,24 @@ score1++;
 
 updatePlayerTurn();
 
+setTimeout(()=>{
+
+nextQuestion();
+
+},1500);
+
 }else{
 
 document.getElementById("result").textContent =
-"❌ 틀렸습니다!";
+`❌ 틀렸습니다! 정답 : ${currentPokemon.name}`;
+
+showPokemon();
+
+setTimeout(()=>{
+
+nextQuestion();
+
+},1500);
 
 }
 
@@ -521,6 +564,17 @@ currentPlayer = currentPlayer === 1 ? 2 : 1;
 loadPokemon();
 
 }
+
+document.getElementById("answer")
+.addEventListener("keydown", function(e){
+
+if(e.key === "Enter"){
+
+checkAnswer();
+
+}
+
+});
 
 </script>
 
